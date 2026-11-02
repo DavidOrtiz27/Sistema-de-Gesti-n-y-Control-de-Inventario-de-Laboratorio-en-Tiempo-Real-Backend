@@ -9,24 +9,32 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UsersRequestDTO {
-    @NotBlank @Size(max = 100)
+    @NotBlank
+    @Size(max = 100)
     private String firstName;
 
-    @NotBlank @Size(max = 100)
+    @NotBlank
+    @Size(max = 100)
     private String lastName;
 
-    @NotBlank @Size(max = 100)
+    @NotBlank
+    @Size(max = 100)
     private String identityDocument;
 
     @Size(max = 30)
     private String phoneNumber;
 
-    @NotBlank @Email @Size(max = 100)
+    @NotBlank
+    @Email
+    @Size(max = 100)
     private String email;
 
-    @NotBlank @Size(min = 8, max = 72)
+    @NotBlank
+    @Size(min = 8, max = 72)
     private String password;
 
+    @NotBlank
     private Long roleId;
+
     private Long careerId;
 }

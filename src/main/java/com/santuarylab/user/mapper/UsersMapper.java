@@ -1,5 +1,6 @@
 package com.santuarylab.user.mapper;
 
+import com.santuarylab.user.dto.RegisterRequestDTO;
 import com.santuarylab.user.dto.UsersRequestDTO;
 import com.santuarylab.user.dto.UsersResponseDTO;
 import com.santuarylab.user.entity.UsersEntity;
@@ -16,6 +17,7 @@ public class UsersMapper {
         this.roleMapper = roleMapper;
     }
 
+    // Privado
     // Response
     public UsersResponseDTO toDTO(UsersEntity entity) {
         if (entity == null) {
@@ -48,5 +50,21 @@ public class UsersMapper {
         entity.setPhoneNumber(dto.getPhoneNumber());
         entity.setEmail(dto.getEmail());
         return entity;
+    }
+
+    // Publico
+    public UsersEntity registerUsers(RegisterRequestDTO registerDTO) {
+        if (registerDTO == null) {
+            return null;
+        }
+
+        UsersEntity entity = new UsersEntity();
+        entity.setFirstName(registerDTO.getFirstName());
+        entity.setLastName(registerDTO.getLastName());
+        entity.setIdentityDocument(registerDTO.getIdentityDocument());
+        entity.setPhoneNumber(registerDTO.getPhoneNumber());
+        entity.setEmail(registerDTO.getEmail());
+        return entity;
+
     }
 }

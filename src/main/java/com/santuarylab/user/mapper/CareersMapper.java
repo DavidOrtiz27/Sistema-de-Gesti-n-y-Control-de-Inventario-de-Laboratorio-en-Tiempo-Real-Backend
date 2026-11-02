@@ -23,7 +23,7 @@ public class CareersMapper {
     }
 
     // Para request
-    public CareersEntity toEntity(CareersRequestDTO dto){
+    public CareersEntity toEntity(CareersRequestDTO dto) {
         if (dto == null) {
             return null;
         }
