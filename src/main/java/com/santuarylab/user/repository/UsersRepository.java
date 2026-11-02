@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
@@ -17,7 +18,11 @@ public interface UsersRepository extends JpaRepository<UsersEntity, Long> {
             "LOWER(u.lastName) like LOWER(CONCAT('%', :query,'%')) OR " +
             "LOWER(u.email) like LOWER(CONCAT('%', :query,'%')) OR " +
             "LOWER(u.phoneNumber) LIKE LOWER(CONCAT('%', :query,'%'))")
-    Page<UsersEntity> findByInfoUser(String query, Pageable pageable);
+    Page<UsersEntity> findByInfoUser(@Param("query") String query, Pageable pageable);
 
     Optional<UsersEntity> findByEmailIgnoreCase(String email);
+
+    Boolean existsByIdentityDocument(String identityDocument);
+
+    Boolean existsByEmailIgnoreCase(String email);
 }
