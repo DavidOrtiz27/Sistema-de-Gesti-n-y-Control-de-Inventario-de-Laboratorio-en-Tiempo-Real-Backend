@@ -6,6 +6,8 @@ import com.santuarylab.user.entity.CareersEntity;
 import com.santuarylab.user.mapper.CareersMapper;
 import com.santuarylab.user.repository.CareersRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,14 +20,20 @@ public class CareersService {
     private final CareersRepository careerRepository;
     private final CareersMapper careerMapper;
 
-    // listar carreras
+    // listar carreras activas (selector del registro)
     @Transactional(readOnly = true)
-    public List<CareersResponseDTO> findAll() {
-        List<CareersEntity> careers = careerRepository.findAll();
+    public List<CareersResponseDTO> findAllActive() {
+        List<CareersEntity> careers = careerRepository.findAllByIsActiveTrueOrderByNameAsc();
 
-        return careers.stream()
-                .map(careerMapper::toDTO)
-                .toList();
+        return careers.stream().map(careerMapper::toDTO).toList();
+    }
+
+    // listar todas las carreras (tabla del admin)
+    @Transactional(readOnly = true)
+    public Page<CareersResponseDTO> findAll(Pageable pageable) {
+        Page<CareersEntity> careers = careerRepository.findAll(pageable);
+
+        return careers.map(careerMapper::toDTO);
     }
 
     // Buscar por id
