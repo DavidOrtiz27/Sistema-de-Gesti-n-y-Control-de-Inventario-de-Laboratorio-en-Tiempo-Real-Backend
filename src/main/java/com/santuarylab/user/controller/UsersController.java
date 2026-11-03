@@ -54,4 +54,14 @@ public class UsersController {
     public UsersResponseDTO create(@RequestBody @Valid UsersRequestDTO usersRequestDTO) {
         return usersService.savePrivate(usersRequestDTO);
     }
+
+    @PutMapping("/me")
+    public UsersResponseDTO updateSelf(@RequestParam Long id, @RequestBody @Valid UpdateSelfProfileRequestDTO updateSelfDTO) {
+        return usersService.updateSelfProfile(id, updateSelfDTO);
+    }
+
+    @PutMapping("/{id}")
+    public UsersResponseDTO adminUpdate(@PathVariable Long id, @RequestBody @Valid AdminUpdateUserRequestDTO adminUpdateUserDTO) {
+        return usersService.adminUpdateUser(id, adminUpdateUserDTO);
+    }
 }

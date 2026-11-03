@@ -152,6 +152,64 @@ public class UsersService {
     }
 
 
+    // Update self
+    @Transactional
+    public UsersResponseDTO updateSelfProfile(Long id, UpdateSelfProfileRequestDTO updateSelfDTO) {
+        // Verificar id
+        UsersEntity user = usersRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario no encontrado por id: " + id));
+
+        if (!user.getEmail().equalsIgnoreCase(updateSelfDTO.getEmail()) && emailExists(updateSelfDTO.getEmail())) {
+            throw new RuntimeException("Error del sistema: el email ya existe en la base de datos.");
+        }
+        user.setEmail(updateSelfDTO.getEmail());
+
+        user.setPhoneNumber(updateSelfDTO.getPhoneNumber());
+
+        return usersMapper.toDTO(user);
+    }
+
+    @Transactional
+    public UsersResponseDTO adminUpdateUser(Long id, AdminUpdateUserRequestDTO adminUpdateUserDTO) {
+
+        UsersEntity user = usersRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario no encontrado por id: " + id));
+
+        if (!user.getEmail().equalsIgnoreCase(adminUpdateUserDTO.getEmail()) && emailExists(adminUpdateUserDTO.getEmail())) {
+            throw new RuntimeException("Error del sistema: el email ya existe en la base de datos.");
+        }
+        user.setEmail(adminUpdateUserDTO.getEmail());
+
+        // Buscar en la db el rol
+        RoleEntity role = roleRepository.findById(adminUpdateUserDTO.getRoleId()).orElseThrow(() -> new RuntimeException("Error del sistema: el rol no existe en la base de datos."));
+        user.setRole(role);
+
+        String roleName = role.getName();
+
+        if (RoleName.ADMIN.name().equals(roleName)) {
+            if (adminUpdateUserDTO.getCareerId() != null) {
+                throw new RuntimeException("El rol ADMIN no debe tener una carrera asignada.");
+            }
+            user.setCareer(null);
+        } else if (RoleName.STUDENT.name().equals(roleName) || RoleName.PROFESSOR.name().equals(roleName)) {
+            Long careerId = adminUpdateUserDTO.getCareerId();
+            if (careerId == null) {
+                throw new RuntimeException("El estudiante o profesor requiere una carrera asignada.");
+            }
+
+            CareersEntity career = careersRepository.findById(careerId).orElseThrow(() -> new RuntimeException("La carrera especificada no existe."));
+            if (!career.getIsActive()) {
+                throw new RuntimeException("La carrera seleccionada no está disponible.");
+            }
+            user.setCareer(career);
+        }
+
+        user.setFirstName(adminUpdateUserDTO.getFirstName());
+        user.setLastName(adminUpdateUserDTO.getLastName());
+        user.setPhoneNumber(adminUpdateUserDTO.getPhoneNumber());
+        user.setIsActive(adminUpdateUserDTO.getIsActive());
+
+        return usersMapper.toDTO(user);
+    }
+
     protected Boolean identityDocumentExists(String identityDocument) {
         return usersRepository.existsByIdentityDocument(identityDocument);
     }
