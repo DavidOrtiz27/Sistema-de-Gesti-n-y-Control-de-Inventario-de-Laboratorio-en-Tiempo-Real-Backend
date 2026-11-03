@@ -1,8 +1,6 @@
 package com.santuarylab.user.service;
 
-import com.santuarylab.user.dto.RegisterRequestDTO;
-import com.santuarylab.user.dto.UsersRequestDTO;
-import com.santuarylab.user.dto.UsersResponseDTO;
+import com.santuarylab.user.dto.*;
 import com.santuarylab.user.entity.CareersEntity;
 import com.santuarylab.user.entity.RoleEntity;
 import com.santuarylab.user.entity.RoleName;
@@ -27,7 +25,7 @@ public class UsersService {
 
     private final UsersRepository usersRepository;
     private final RoleRepository roleRepository;
-    private final CareersRepository careerRepository;
+    private final CareersRepository careersRepository;
     private final UsersMapper usersMapper;
     private final PasswordEncoder passwordEncoder;
 
@@ -89,8 +87,11 @@ public class UsersService {
         RoleEntity role = roleRepository.findByNameIgnoreCase(RoleName.STUDENT.name()).orElseThrow(() -> new IllegalStateException("Error del sistema: el rol por defecto no existe en la base de datos."));
         user.setRole(role);
 
-        CareersEntity careers = careerRepository.findById(registerDTO.getCareerId()).orElseThrow(() -> new RuntimeException("Error del sistema: el career del usuario no existe o es nula."));
-        user.setCareer(careers);
+        CareersEntity career = careersRepository.findById(registerDTO.getCareerId()).orElseThrow(() -> new RuntimeException("Error del sistema: la carrera del usuario no existe o es nula."));
+        if (!career.getIsActive()) {
+            throw new RuntimeException("La carrera seleccionada no está disponible.");
+        }
+        user.setCareer(career);
 
         String encodedPassword = passwordEncoder.encode(registerDTO.getPassword());
         user.setPasswordHash(encodedPassword);
@@ -136,11 +137,12 @@ public class UsersService {
                 throw new RuntimeException("El estudiante o profesor requiere una carrera asignada.");
             }
 
-            CareersEntity career = careerRepository.findById(careerId).orElseThrow(() -> new RuntimeException("La carrera especificada no existe."));
-
+            CareersEntity career = careersRepository.findById(careerId).orElseThrow(() -> new RuntimeException("La carrera especificada no existe."));
+            if (!career.getIsActive()) {
+                throw new RuntimeException("La carrera seleccionada no está disponible.");
+            }
             user.setCareer(career);
         }
-
 
         String encodedPassword = passwordEncoder.encode(usersRequestDTO.getPassword());
         user.setPasswordHash(encodedPassword);
@@ -156,16 +158,6 @@ public class UsersService {
 
     protected Boolean emailExists(String email) {
         return usersRepository.existsByEmailIgnoreCase(email);
-    }
-
-
-    // Actualizar
-    @Transactional
-    public UsersResponseDTO updateUser(Long id, UsersRequestDTO usersRequestDTO) {
-        // Verificar id
-        UsersEntity users = usersRepository.findById(id).orElseThrow(() -> new RuntimeException("USer no encontrado por id: " + id));
-        
-
     }
 
 }

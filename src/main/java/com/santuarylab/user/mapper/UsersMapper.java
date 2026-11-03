@@ -1,8 +1,6 @@
 package com.santuarylab.user.mapper;
 
-import com.santuarylab.user.dto.RegisterRequestDTO;
-import com.santuarylab.user.dto.UsersRequestDTO;
-import com.santuarylab.user.dto.UsersResponseDTO;
+import com.santuarylab.user.dto.*;
 import com.santuarylab.user.entity.UsersEntity;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +15,7 @@ public class UsersMapper {
         this.roleMapper = roleMapper;
     }
 
-    // Privado
+    // Private
     // Response
     public UsersResponseDTO toDTO(UsersEntity entity) {
         if (entity == null) {
@@ -52,7 +50,7 @@ public class UsersMapper {
         return entity;
     }
 
-    // Publico
+    // Public
     public UsersEntity registerUsers(RegisterRequestDTO registerDTO) {
         if (registerDTO == null) {
             return null;
@@ -65,6 +63,6 @@ public class UsersMapper {
         entity.setPhoneNumber(registerDTO.getPhoneNumber());
         entity.setEmail(registerDTO.getEmail());
         return entity;
-
     }
+
 }
