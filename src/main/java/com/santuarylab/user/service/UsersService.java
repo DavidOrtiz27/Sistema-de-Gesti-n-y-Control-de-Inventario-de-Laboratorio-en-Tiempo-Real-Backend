@@ -210,6 +210,14 @@ public class UsersService {
         return usersMapper.toDTO(user);
     }
 
+    @Transactional
+    public void deactivate(Long id) {
+        UsersEntity user = usersRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + id));
+        user.setIsActive(false);
+        usersRepository.save(user);
+    }
+
     protected Boolean identityDocumentExists(String identityDocument) {
         return usersRepository.existsByIdentityDocument(identityDocument);
     }

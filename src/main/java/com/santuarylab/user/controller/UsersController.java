@@ -64,4 +64,10 @@ public class UsersController {
     public UsersResponseDTO adminUpdate(@PathVariable Long id, @RequestBody @Valid AdminUpdateUserRequestDTO adminUpdateUserDTO) {
         return usersService.adminUpdateUser(id, adminUpdateUserDTO);
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deactivate(@PathVariable Long id) {
+        usersService.deactivate(id);
+    }
 }
