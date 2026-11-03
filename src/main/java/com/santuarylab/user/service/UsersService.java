@@ -29,12 +29,6 @@ public class UsersService {
     private final UsersMapper usersMapper;
     private final PasswordEncoder passwordEncoder;
 
-    // lista de usuarios
-    @Transactional(readOnly = true)
-    public List<UsersResponseDTO> findAll() {
-        List<UsersEntity> users = usersRepository.findAll();
-        return users.stream().map(usersMapper::toDTO).toList();
-    }
 
     // lista por id
     @Transactional(readOnly = true)
@@ -43,7 +37,7 @@ public class UsersService {
         return user.map(usersMapper::toDTO);
     }
 
-    // Busqueda por info Usuario
+    // Listar y buscar por info Usuario
     @Transactional(readOnly = true)
     public Page<UsersResponseDTO> findByInfo(String info, Pageable pageable) {
 

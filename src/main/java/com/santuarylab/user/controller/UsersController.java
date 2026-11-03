@@ -23,8 +23,9 @@ public class UsersController {
     private final UsersService usersService;
 
     @GetMapping
-    public List<UsersResponseDTO> getUsers() {
-        return usersService.findAll();
+    public Page<UsersResponseDTO> getUsers(@RequestParam(value = "q", required = false) String search,
+                                           @PageableDefault(sort = "lastName", size = 10) Pageable pageable) {
+        return usersService.findByInfo(search, pageable);
     }
 
     @GetMapping("/{id}")
@@ -35,12 +36,6 @@ public class UsersController {
     @GetMapping("/email/{email}")
     public ResponseEntity<UsersResponseDTO> getUserByEmail(@PathVariable String email) {
         return ResponseEntity.of(usersService.findByEmailIgnoreCase(email));
-    }
-
-    @GetMapping("/search")
-    public Page<UsersResponseDTO> searchUsers(@RequestParam("q") String search,
-                                              @PageableDefault(sort = "lastName", size = 10) Pageable pageable) {
-        return usersService.findByInfo(search, pageable);
     }
 
     @PostMapping("/register")
